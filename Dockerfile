@@ -1,12 +1,10 @@
-FROM php:7.2.0-fpm
+FROM php:7.2-fpm
 
-# Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/
+# Arguments defined in docker-compose.yml
+ARG user
+ARG uid
 
-# Set working directory
-WORKDIR /var/www
-
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -21,34 +19,25 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl
-
 RUN apt-get update && apt-get install -y libmcrypt-dev \
     && pecl install mcrypt-1.0.2 \
     && docker-php-ext-enable mcrypt
+
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install extensions
-RUN docker-php-ext-install pdo_mysql zip exif pcntl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.20
+# Get latest Composer
+COPY --from=composer:1.10.20 /usr/bin/composer /usr/bin/composer
 
-# Add user for laravel application
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+# Create system user to run Composer and Artisan Commands
+RUN useradd -G www-data,root -u $uid -d /home/$user $user
+RUN mkdir -p /home/$user/.composer && \
+    chown -R $user:$user /home/$user
 
-# Copy existing application directory contents
-COPY . /var/www
+# Set working directory
+WORKDIR /var/www
 
-# Copy existing application directory permissions
-COPY --chown=www:www . /var/www
-RUN chmod -R 755 /var/www
-# Change current user to www
-USER www
-
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+USER $user

@@ -3,12 +3,17 @@ services:
   #PHP Service
   app:
     build:
+      args:
+        user: www
+        uid: 1000
       context: .
       dockerfile: Dockerfile
     image: url-shortener_app
     container_name: app
     restart: unless-stopped
     tty: true
+    ports:
+      - "9000:9000"
     environment:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
