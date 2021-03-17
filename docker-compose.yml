@@ -4,7 +4,7 @@ services:
   app:
     build:
       args:
-        user: www
+        user: app1
         uid: 1000
       context: .
       dockerfile: Dockerfile
