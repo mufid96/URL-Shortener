@@ -10,11 +10,11 @@ echo Updating composer
 composer update
 
 echo Creating MySQL database
-mysql -uroot -p -e "CREATE DATABASE larademos"
+mysql -uroot -p -e "CREATE DATABASE laravel"
 
 echo Updating database configuration file
-gsed -i "s/'database'  => 'database'/'database'  => 'larademos'/" app/config/database.php
-gsed -i "s/'password'  => ''/'password'  => '1234'/" app/config/database.php
+gsed -i "s/'database'  => 'database'/'database'  => 'laravel'/" app/config/database.php
+gsed -i "s/'password'  => ''/'password'  => 'admin'/" app/config/database.php
 
 echo -n "Do you need a users table? [yes|no] "
 read -e ANSWER

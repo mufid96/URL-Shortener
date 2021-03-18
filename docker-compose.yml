@@ -48,7 +48,9 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: admin
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: admin
       SERVICE_TAGS: dev
       SERVICE_NAME: mariadb
