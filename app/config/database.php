@@ -62,7 +62,7 @@ return array(
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
                         'port'      => '3306',
-                        'unix_socket' => '/tmp/mysql.sock',
+                        'unix_socket' => '',
 		),
 
 		'pgsql' => array(
